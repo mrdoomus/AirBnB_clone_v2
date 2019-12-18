@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """This is the base model class for AirBnB"""
 from models.base_model import BaseModel
-from models.user import User
+from models import User
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
@@ -42,7 +42,7 @@ class DB_Storage:
             for ins in self.__session.query(cls).all():
                 dic[ins.__class__.__name__ + '.' + ins.id] = ins
         else:
-            holder_list = [User, State, City, Amenity, Place, Review]
+            holder_list = [State, City]
             for classes in holder_list:
                 for ins in self.__session.query(classes).all():
                     dic[ins.__class__.__name__ + '.' + ins.id] = ins
