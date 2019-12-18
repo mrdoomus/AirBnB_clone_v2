@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """This is the base model class for AirBnB"""
-from models.base_model import BaseModel, Base
+from models.base_model import BaseModel
 from models.user import User
 from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
+from models.base_model import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 import os
