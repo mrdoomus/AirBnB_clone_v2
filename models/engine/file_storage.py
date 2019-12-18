@@ -31,6 +31,9 @@ class FileStorage:
         """sets __object to given obj
         Args:
             obj: given object
+        type(obj).__name__ = Class name
+        obj.id = Object id
+        self.__object = Dictionary with every created class
         """
         if obj:
             key = "{}.{}".format(type(obj).__name__, obj.id)
