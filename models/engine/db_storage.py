@@ -26,7 +26,9 @@ class DB_Storage:
         PASSWD = os.environ.get('HBNB_MYSQL_PWD')
         HOST = os.environ.get('HBNB_MYSQL_HOST')
         DB = os.environ.get('HBNB_MYSQL_DB')
-        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(USER ,PASSWD, HOST, DB), pool_pre_ping=True)
+        self.__engine = create_engine(
+            'mysql+mysqldb://{}:{}@{}/{}'.format(
+                USER, PASSWD, HOST, DB), pool_pre_ping=True)
 
         if os.environ.get('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
@@ -39,8 +41,8 @@ class DB_Storage:
             for ins in self.__session.query(cls).all():
                 dic[ins.__class__.__name__ + '.' + ins.id] = ins
         else:
-            for ins in self.__session\
-                .query(User, State, City, Amenity, Place, Review).all():
+            for ins in self.__session.query(
+                    User, State, City, Amenity, Place, Review).all():
                 dic[ins.__class__.__name__ + '.' + ins.id] = ins
         return dic
 
@@ -64,6 +66,7 @@ class DB_Storage:
         """ Delete - deletes an object to the session
         """
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        session_factory = sessionmaker(
+            bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_factory)
         self.__session = Session()
