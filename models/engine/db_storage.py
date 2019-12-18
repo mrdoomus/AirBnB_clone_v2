@@ -42,9 +42,10 @@ class DB_Storage:
             for ins in self.__session.query(cls).all():
                 dic[ins.__class__.__name__ + '.' + ins.id] = ins
         else:
-            for ins in self.__session.query(
-                    User, State, City, Amenity, Place, Review).all():
-                dic[ins.__class__.__name__ + '.' + ins.id] = ins
+            holder_list = [User, State, City, Amenity, Place, Review]
+            for classes in holder_list:
+                for ins in self.__session.query(classes).all():
+                    dic[ins.__class__.__name__ + '.' + ins.id] = ins
         return dic
 
     def new(self, obj):

@@ -3,8 +3,8 @@
 from models.base_model import BaseModel
 from models.city import City
 from models.base_model import Base
-from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String
 import models
 import os
 
@@ -22,7 +22,7 @@ class State(BaseModel, Base):
         @property
         def cities(self):
             """ Adds every instance of City and returns a list """
-            cities_dict = storage.all(City)
+            cities_dict = models.storage.all(City)
             cities_list = []
             for value in cities_dict.values():
                 if value[id] == self.id:
