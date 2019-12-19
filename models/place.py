@@ -1,13 +1,24 @@
 #!/usr/bin/python3
 """This is the place class"""
-from models.base_model import BaseModel
-from sqlalchemy import Column, String, Table, ForeignKey, Integer, Float
 from models.review import Review
 from models.amenity import Amenity
+from models.base_model import BaseModel
+from sqlalchemy import Column, String, Table, ForeignKey, Integer, Float
 from sqlalchemy.orm import relationship
 from models.base_model import Base
 import os
 import models
+
+
+metadata = Base.metadata
+place_amenity = Table('place_amenity', metadata,
+                      Column('place_id', String(60),
+                             ForeignKey('places.id'), primary_key=True,
+                             nullable=False),
+                      Column('amenity_id', String(60),
+                             ForeignKey('amenities.id'),
+                             primary_key=True,
+                             nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -39,22 +50,14 @@ class Place(BaseModel, Base):
     amenity_ids = []
 
     if os.environ.get('HBNB_STORAGE') == 'db':
-        metadata = Base.metadata
-        place_amenity = Table('place_amenity', metadata,
-                              Column('place_id', String(60),
-                                     ForeignKey('places.id'), primary_key=True,
-                                     nullable=False),
-                              Column('amenity_id', String(60),
-                                     ForeignKey('amenities.id'),
-                                     primary_key=True,
-                                     nullable=False))
         reviews = relationship("Review", cascade="delete", backref="places")
-        amenities = relationship("Amenity", secondary='place_amenity',
-                                 viewonly=False)
+        amenities = relationship("Amenity", secondary=place_amenity,
+                                 backref='places', viewonly=False)
     else:
         @property
         def reviews(self):
-            """ """
+            """ Getter for reviews method
+            """
             dict_revs = models.storage.all(Review)
             list_revs = []
             for value in dict_revs.values():
@@ -64,7 +67,8 @@ class Place(BaseModel, Base):
 
         @property
         def amenities(self):
-            """ """
+            """ Setter for amenities method
+            """
             dict_amenities = models.storage.all(Amenity)
             list_amenities = []
             for value in dict_amenities.values():
@@ -74,6 +78,7 @@ class Place(BaseModel, Base):
 
         @amenities.setter
         def amenities(self, value):
-            """ """
+            """ setter for amenities method
+            """
             if type(value) == Amenity:
                 self.amenity_ids.append(value.id)
