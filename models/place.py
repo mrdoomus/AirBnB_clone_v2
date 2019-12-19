@@ -5,9 +5,9 @@ from sqlalchemy import Column, String, Table, ForeignKey, Integer, Float
 from models.review import Review
 from models.amenity import Amenity
 from sqlalchemy.orm import relationship
-import models
 from models.base_model import Base
 import os
+import models
 
 
 class Place(BaseModel, Base):
@@ -37,8 +37,8 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     amenity_ids = []
+
     if os.environ.get('HBNB_STORAGE') == 'db':
-        reviews = relationship("Review", cascade="delete", backref="places")
         metadata = Base.metadata
         place_amenity = Table('place_amenity', metadata,
                               Column('place_id', String(60),
@@ -48,8 +48,9 @@ class Place(BaseModel, Base):
                                      ForeignKey('amenities.id'),
                                      primary_key=True,
                                      nullable=False))
+        reviews = relationship("Review", cascade="delete", backref="places")
         amenities = relationship("Amenity", secondary='place_amenity',
-                                 backref='places', viewonly=False)
+                                 viewonly=False)
     else:
         @property
         def reviews(self):
