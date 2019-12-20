@@ -3,7 +3,8 @@
 from models.review import Review
 from models.amenity import Amenity
 from models.base_model import BaseModel
-from sqlalchemy import Column, String, Table, ForeignKey, Integer, Float
+from sqlalchemy import Column, String, ForeignKey, Integer, Float
+from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 from models.base_model import Base
 import os
@@ -11,13 +12,14 @@ import models
 
 metadata = Base.metadata
 place_amenity = Table('place_amenity', metadata,
-                    Column('place_id', String(60),
-                            ForeignKey('places.id'), primary_key=True,
-                            nullable=False),
-                    Column('amenity_id', String(60),
-                            ForeignKey('amenities.id'),
-                            primary_key=True,
-                            nullable=False))
+                      Column('place_id', String(60),
+                             ForeignKey('places.id'),
+                             primary_key=True,
+                             nullable=False),
+                      Column('amenity_id', String(60),
+                             ForeignKey('amenities.id'),
+                             primary_key=True,
+                             nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -49,8 +51,8 @@ class Place(BaseModel, Base):
     amenity_ids = []
 
     if os.environ.get('HBNB_STORAGE') == 'db':
-        reviews = relationship("Review", cascade="delete", backref="places")
-        amenities = relationship("Amenity", secondary=place_amenity,
+        reviews = relationship("Review", cascade="delete", backref="place")
+        amenities = relationship("Amenity", secondary='place_amenity',
                                  backref='places', viewonly=False)
     else:
         @property
@@ -66,7 +68,7 @@ class Place(BaseModel, Base):
 
         @property
         def amenities(self):
-            """ Setter for amenities method
+            """ Getter for amenities method
             """
             dict_amenities = models.storage.all(Amenity)
             list_amenities = []
@@ -76,8 +78,8 @@ class Place(BaseModel, Base):
             return list_amenities
 
         @amenities.setter
-        def amenities(self, value):
+        def amenities(self, value=None):
             """ setter for amenities method
             """
-            if type(value) == Amenity:
+            if type(value).__name__ == 'Amenity' and value is not None:
                 self.amenity_ids.append(value.id)
