@@ -10,8 +10,7 @@ from models.base_model import Base
 import os
 import models
 
-metadata = Base.metadata
-place_amenity = Table('place_amenity', metadata,
+place_amenity = Table('place_amenity', Base.metadata,
                       Column('place_id', String(60),
                              ForeignKey('places.id'),
                              primary_key=True,
@@ -50,10 +49,10 @@ class Place(BaseModel, Base):
     longitude = Column(Float, nullable=True)
     amenity_ids = []
 
-    if os.environ.get('HBNB_STORAGE') == 'db':
+    if os.environ.get('HBNB_TYPE_STORAGE') == 'db':
         reviews = relationship("Review", cascade="delete", backref="place")
-        amenities = relationship("Amenity", secondary='place_amenity',
-                                 backref='places', viewonly=False)
+        amenities = relationship("Amenity", secondary=place_amenity,
+                                 backref='place_amenities', viewonly=False)
     else:
         @property
         def reviews(self):
