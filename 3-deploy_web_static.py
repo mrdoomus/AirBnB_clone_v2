@@ -15,9 +15,12 @@ def do_pack():
     path = local("tar -zcvf versions/web_static_{}.tgz web_static".format(
         datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")))
 
+    name = "versions/web_static_{}.tgz".format(
+        datetime.strftime(datetime.now(), "%Y%m%d%H%M%S"))
+
     if path.failed:
         return None
-    return path
+    return name
 
 
 def do_deploy(archive_path):
