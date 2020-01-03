@@ -1,50 +1,42 @@
 #Executes task #0 but in puppet mode ;)
-exec { 'Update':
+exec { 'updates os':
   command  => 'apt-get -y update',
-  provider => shell,
+  provider => 'shell',
 }
-exec { 'Get nginx':
-  command  => 'apt-get -y install nginx',
-  provider => shell,
+
+package { 'nginx':
+  ensure   => installed,
 }
-exec { 'create data folder':
-  command  => 'mkdir -p /data/',
-  provider => shell,
+
+file { ['/data/', '/data/web_static/', '/data/web_static/releases/', '/data/web_static/releases/test', '/data/web_static/shared']:
+  ensure => 'directory',
+  owner  => 'ubuntu',
+  group  => 'ubuntu',
 }
-exec { 'create web_static folder in data':
-  command  => 'mkdir -p /data/web_static/',
-  provider => shell,
+
+file { '/data/web_static/releases/test/index.html':
+  content => 'Second try!',
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
 }
-exec { 'create releases folder in web_static':
-  command  => 'mkdir -p /data/web_static/releases/',
-  provider => shell,
+
+file { '/data/web_static/current':
+  ensure => 'link',
+  target => '/data/web_static/releases/test/',
+  force  => yes,
+  owner  => 'ubuntu',
+  group  => 'ubuntu',
 }
-exec { 'create shared folder in web_static':
-  command  => 'mkdir -p /data/web_static/shared/',
-  provider => shell,
+
+file_line { 'add alias location':
+  ensure => 'present',
+  path   => '/etc/nginx/sites-available/default',
+  after  => 'listen 80 default_server;',
+  line   => 'location /hbnb_static/ {\n\talias /data/web_static/current/;\n}',
 }
-exec { 'create test folder in releases':
-  command  => 'mkdir -p /data/web_static/releases/test/',
-  provider => shell,
-}
-exec { 'Writes "hope it works" in tests index.html':
-  command  => 'echo "hope it works" > /data/web_static/releases/test/index.html',
-  provider => shell,
-}
-exec { 'creates symbolic link between test and current':
-  command  => 'ln -sf /data/web_static/releases/test/ /data/web_static/current',
-  provider => shell,
-}
-exec { 'changes owner and group to data':
-  command  => 'chown -R ubuntu:ubuntu /data/',
-  provider => shell,
-}
-exec { 'adds alias to location':
-  command  => 'sed -i "/listen 80 default_server;/a location /hbnb_static/ {\n\talias /data/web_static/current/;\n}"
-  /etc/nginx/sites-available/default',
-  provider => shell,
-}
-exec { 'restarts nginx service':
-  command  => 'service nginx restart',
-  provider => shell,
+
+service { 'nginx':
+  ensure  => 'running',
+  enable  => true,
+  require => Package['nginx'],
 }
