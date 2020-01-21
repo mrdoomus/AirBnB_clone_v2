@@ -25,6 +25,6 @@ class State(BaseModel, Base):
             cities_dict = models.storage.all(City)
             cities_list = []
             for value in cities_dict.values():
-                if value[id] == self.id:
+                if value.state_id == self.id:
                     cities_list.append(value)
             return cities_list
