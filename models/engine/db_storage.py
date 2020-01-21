@@ -42,7 +42,13 @@ class DB_Storage:
             for ins in self.__session.query(eval(cls)).all():
                 dic[ins.__class__.__name__ + '.' + ins.id] = ins
         else:
-            holder_list = ["State", "City", "User", "Review", "Place", "Amenity"]
+            holder_list = [
+                "State",
+                "City",
+                "User",
+                "Review",
+                "Place",
+                "Amenity"]
             for classes in holder_list:
                 for ins in self.__session.query(eval(classes)).all():
                     dic[ins.__class__.__name__ + '.' + ins.id] = ins
