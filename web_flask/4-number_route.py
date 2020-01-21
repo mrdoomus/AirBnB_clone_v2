@@ -28,7 +28,7 @@ def py_route(text='is cool'):
 
 @app.route('/number/<int:n>')
 def num_route(n):
-    if type(n) is n:
+    if type(n) is int:
         return '{:d} is a number'.format(n)
 
 
