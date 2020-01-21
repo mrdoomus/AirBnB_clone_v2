@@ -28,12 +28,14 @@ def py_route(text='is cool'):
 
 @app.route('/number/<int:n>')
 def num_route(n):
-    return '{:d} is a number'.format(int(n))
+    if type(n) is int:
+        return '{:d} is a number'.format(n)
 
 
 @app.route('/number_template/<int:n>')
 def num_temp_route(n):
-    return render_template('5-number.html', n=int(n))
+    if type(n) is int:
+        return render_template('5-number.html', n=n)
 
 
 if __name__ == "__main__":

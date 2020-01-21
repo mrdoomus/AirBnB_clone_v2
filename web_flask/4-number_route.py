@@ -26,9 +26,10 @@ def py_route(text='is cool'):
     return 'Python {}'.format(text.replace('_', ' '))
 
 
-@app.route('/number/<n>')
+@app.route('/number/<int:n>')
 def num_route(n):
-    return '{:d} is a number'.format(int(n))
+    if type(n) is n:
+        return '{:d} is a number'.format(n)
 
 
 if __name__ == "__main__":
