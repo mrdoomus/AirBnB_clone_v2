@@ -33,8 +33,7 @@ def num_route(n):
 
 
 @app.route('/number_template/<int:n>')
-@app.route('/number_template')
-def num_temp_route(n):
+def number_template(n):
     if type(n) is int:
         return render_template('5-number.html', n=n)
 
