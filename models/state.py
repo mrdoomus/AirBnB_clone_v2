@@ -22,7 +22,7 @@ class State(BaseModel, Base):
         @property
         def cities(self):
             """ Adds every instance of City and returns a list """
-            cities_dict = models.storage.all(City)
+            cities_dict = models.storage.all('City')
             cities_list = []
             for value in cities_dict.values():
                 if value.state_id == self.id:
